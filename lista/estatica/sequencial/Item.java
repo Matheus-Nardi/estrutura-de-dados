@@ -4,6 +4,9 @@ public class Item {
 
     private int valor;
 
+    public Item() {
+        super();
+    }
     public Item(int valor) {
        this.valor = valor;
     }

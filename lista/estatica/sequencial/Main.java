@@ -2,14 +2,22 @@ package lista.estatica.sequencial;
 
 public class Main {
     public static void main(String[] args) {
-        Lista minhaLista = new Lista(10);
-        minhaLista.inserir(new Item(1));
-        minhaLista.inserir(new Item(8));
-        minhaLista.inserir(new Item(4));
+        Lista lista = new Lista(10);
+        lista.inserir(22);
+        lista.inserir(44);
+        lista.inserir(12);
+        lista.inserir(44);
 
-        minhaLista.imprimir();
-        minhaLista.removerInicioLista();
+        lista.imprimir();
+        System.out.println();
+        lista.removerOcorrencia(44);
+        lista.imprimir();
+        System.out.println();
+        lista.inserir(78, 2);
+        lista.imprimir();
 
-        minhaLista.imprimir();
+        System.out.println();
+        lista.inserirValorADepoisDeValorB(23, 22);
+        lista.imprimir();
     }
 }
