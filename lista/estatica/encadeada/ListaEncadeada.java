@@ -59,24 +59,18 @@ public class ListaEncadeada {
         return true;
     }
 
-    public boolean inserirElemento(int elemento, int posicao) {
-        if (validarPosicao(posicao)) {
-            int posicaoVazia = encontrarPosicaoVazia();
-            if (posicaoVazia == 1)
-                return false;
-            Item item = this.itens[posicaoVazia];
-            item.setValor(elemento);
-            item.setVazio(0);
-
-            if (posicao == 0)
-                inserirElemento(elemento);
-            else {
-                int anterior = encontrarElementoAnterior(posicao);
-                if (anterior != -1) {
-                    this.itens[anterior].setProximo(posicaoVazia);
-                    item.setProximo(this.itens[anterior].getProximo());
-                }
-            }
+    public boolean inserirInicio(int valor) {
+        if (tamanho == itens.length) {
+            return false;
+        }
+        int posicaoVazia = encontrarPosicaoVazia();
+        if (posicaoVazia != -1) {
+            int antigoPrimeiro = inicio;
+            inicio = posicaoVazia;
+            itens[inicio] = new Item();
+            itens[inicio].setVazio(0);
+            itens[inicio].setValor(valor);
+            itens[inicio].setProximo(antigoPrimeiro);
             tamanho++;
             return true;
         }
@@ -84,48 +78,73 @@ public class ListaEncadeada {
 
     }
 
-    private boolean validarPosicao(int posicao) {
-        return posicao >= 0 && posicao <= this.tamanho;
-    }
-
-    private int encontrarElementoAnterior(int posicao) {
-        int atual = inicio;
-        int index = 0;
-
-        while (atual != -1 && index < posicao - 1) {
-            atual = itens[atual].getProximo();
-            index++;
+    public boolean inserir(int valor, int posicao) {
+        if (posicao < 0 && posicao > tamanho) {
+            return false;
+        }
+        if (posicao == 0) {
+            return inserirInicio(valor);
         }
 
-        return atual; // Retorna o índice do elemento anterior ou -1 se não encontrado
+        int posicaoVazia = encontrarPosicaoVazia();
+        if (posicaoVazia != -1) {
+            int anterior = inicio;
+            for (int i = 0; i < posicao - 1; i++) {
+                anterior = itens[anterior].getProximo();
+            }
+
+            itens[posicaoVazia] = new Item();
+            itens[posicaoVazia].setVazio(0);
+            itens[posicaoVazia].setValor(valor);
+
+            itens[posicaoVazia].setProximo(itens[anterior].getProximo());
+            itens[anterior].setProximo(posicaoVazia);
+            return true;
+        }
+        return false;
+
     }
 
-    public void imprimirLista() {
+    public boolean remover() {
         if (inicio == -1) {
-            System.out.println("A lista está vazia.");
+            return false;
+        }
+
+        if (itens[inicio].getProximo() == -1) {
+            inicio = -1;
+            tamanho--;
+            return true;
+        }
+
+        int penultimo = inicio;
+        int atual = itens[inicio].getProximo();
+
+        while (itens[atual].getProximo() != -1) {
+            penultimo = atual;
+            atual = itens[atual].getProximo();
+        }
+
+        itens[penultimo].setProximo(-1); // se torna o ultimo
+        itens[atual].setVazio(1);
+        tamanho--;
+        return true;
+
+    }
+
+    public void imprimir() {
+
+        if (inicio == -1) {
+            System.out.println("Lista vazia - NULL");
             return;
         }
-
         int atual = inicio;
-        StringBuilder sb = new StringBuilder();
-        int contador = 0; // Contador para evitar loops infinitos
-
-        while (atual != -1) {
-            sb.append(itens[atual].getValor());
+        while (itens[atual].getProximo() != -1) {
+            System.out.print(itens[atual].getValor() + " -> ");
             atual = itens[atual].getProximo();
-
-            if (atual != -1) {
-                sb.append(" -> ");
-            }
-
-            contador++;
-            if (contador > itens.length) { // Evita loop infinito
-                System.out.println("Loop infinito detectado!");
-                break;
-            }
         }
 
-        System.out.println(sb.toString());
+        System.out.println(itens[atual].getValor() + " -> NULL");
+
     }
 
     public int getTamanho() {
